@@ -1,9 +1,9 @@
-import Card from "../models/Card"
+import { CardName } from "../models/enums"
 import { SimResult } from "../models/Sim"
 
 const worker = new Worker(new URL('sim.worker', import.meta.url))
 
-export default function SimWorker(payload: Card[]) {
+export default function SimWorker(payload: CardName[]) {
     worker.postMessage(payload)
     return new Promise<SimResult>((resolve, reject) => {
         worker.onmessage = (e: MessageEvent<SimResult>) => {
