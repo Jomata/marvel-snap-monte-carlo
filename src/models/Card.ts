@@ -1,4 +1,5 @@
 import randomElement from "../helpers/randomElement";
+import { DEBUG } from "./constants";
 import { CardName } from "./enums";
 import Game from "./Game";
 
@@ -68,7 +69,7 @@ export default class Card {
 
     //Maybe this should also be in Game
     revealCard(game:Game) : Game {
-        console.log(` > Revealing ${this.name}`)
+        console.log(` > Revealing %c${this.name}`, DEBUG.CSS_CARD_NAME)
         const revealedCard = this.copy({revealed:true})
         const newBoard = game.copy({
             field: game.field.filter(c => c !== this).concat(revealedCard)

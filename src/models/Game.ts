@@ -4,6 +4,7 @@ import check from "../helpers/check";
 import { shuffle } from "../helpers/shuffle";
 import Card from "./Card";
 import { CardName } from "./enums";
+import { DEBUG } from './constants'
 
 export type GameProps = {
     //deck:Card[]
@@ -109,9 +110,9 @@ export default class Game {
     }
 
     startTurn() : Game {
-        console.log(`Turn ${this.turn+1} starts`)
+        console.log(`Turn ${this.turn+1} start`)
         const draw = this.library.slice(0, 1)[0]
-        console.log(` > Drew`, draw.name)
+        console.log(` > Drew %c${draw.name}`, DEBUG.CSS_CARD_NAME)
         const remaining = this.library.slice(1)
 
         return this.copy({
@@ -128,7 +129,7 @@ export default class Game {
     endTurn() : Game {
         //TODO: Proc onreveals 
         const unrevealedCards = this.field.filter(c => c.revealed === false)
-        console.log(`Turn ${this.turn} ends`)
+        console.log(`Turn ${this.turn} end`)
         return unrevealedCards.reduce((acc, card) => {
             return card.revealCard(acc);
         }, this as Game)
@@ -136,7 +137,7 @@ export default class Game {
 
     //Plays the card, no questions asked
     playCard(card:Card) : Game {
-        console.log(` > Playing ${card.name} using ${card.getEffectiveCost(this)}/${this.getAvailableEnergy()} energy`)
+        console.log(` > Playing %c${card.name} %cusing %c${card.getEffectiveCost(this)}/${this.getAvailableEnergy()} %cenergy`, DEBUG.CSS_CARD_NAME, '', DEBUG.CSS_ENERGY, '')
         //We remove the card from hand
         //Add it to the field
         //Add the energy cost to used energy
