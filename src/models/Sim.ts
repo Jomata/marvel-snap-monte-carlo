@@ -19,7 +19,7 @@ export interface CardPriority {
 }
 
 export default abstract class Sim {
-    static run(deck:Card[], iterations:number) : SimResult {
+    static run(deck:Card[], iterations:number, logic:CardPriority) : SimResult {
 
         console.log("Run")
 
@@ -31,25 +31,16 @@ export default abstract class Sim {
 
         for(let i =0; i<iterations; i++) {
             result.iterations++
-            let game = new Game(deck)
-            let endState = game
+            const game = new Game(deck)
+            const endState = game
                 .startGame()
-                //Turn 1
-                .startTurn()
-                .playCardIfPossible("Bast")
-                .endTurn()
-                //Turn 2
-                .startTurn()
-                .playCardIfPossible("Zabu")
-                .playCardIfPossible("Psylocke")
-                .endTurn()
-                //Turn 3
-                .startTurn()
-                .playCardIfPossible("Mister Negative")
-                .playCardIfPossible("Jubilee")
-                .endTurn()
-
-            // endState.debug()
+                .playTurn(logic.turn1)
+                .playTurn(logic.turn2)
+                .playTurn(logic.turn3)
+                .playTurn(logic.turn4)
+                .playTurn(logic.turn5)
+                .playTurn(logic.turn6)
+                //.playTurn(logic.turn7) //TODO: Think what to do about LIMBO
             
             if(endState.field.some(c => c.name === "Mister Negative")) 
                 result.successes++;

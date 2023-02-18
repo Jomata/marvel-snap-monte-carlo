@@ -111,9 +111,12 @@ export default class Game {
 
     startTurn() : Game {
         console.log(`Turn ${this.turn+1} start`)
+        const drawThisTurn = this.hand.length < 7
         const draw = this.library.slice(0, 1)[0]
-        console.log(` > Drew %c${draw.name}`, DEBUG.CSS_CARD_NAME)
-        const remaining = this.library.slice(1)
+        if(drawThisTurn) console.log(` > Drew %c${draw.name}`, DEBUG.CSS_CARD_NAME)
+        else console.log(` > Full hand, skipping draw`)
+        const newLibrary = drawThisTurn ? this.library.slice(1) : this.library
+        const newHand = drawThisTurn ? [...this.hand, draw] : this.hand
 
         return this.copy({
             turn: this.turn + 1,
@@ -121,8 +124,8 @@ export default class Game {
              //energy gets reset every turn
             tempEnergy: 0,
             usedEnergy: 0,
-            hand: [...this.hand, draw],
-            library: remaining,
+            hand: newHand,
+            library: newLibrary,
         }).onTurnStart() 
     }
 
@@ -147,6 +150,15 @@ export default class Game {
             field: [...this.field, card],
             usedEnergy: this.usedEnergy + card.getEffectiveCost(this),
         })
+    }
+
+    //Starts turn, plays all of the cards in order (if possible), then ends turn
+    playTurn(cards:CardName[]) : Game {
+        const start = this.startTurn()
+        const playAll = cards.reduce( (acc, cardName) => {
+            return acc.playCardIfPossible(cardName);
+        }, start)
+        return playAll.endTurn()
     }
 
     //Checks if we can play the card (have energy, have card in hand), then does so if possible

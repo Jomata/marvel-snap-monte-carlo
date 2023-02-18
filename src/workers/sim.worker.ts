@@ -12,7 +12,7 @@ self.onmessage = (e: MessageEvent<SimWorkerPayload>) => {
     const cardNames = e.data.cards
     const deck = cardNames.map(c => Card.createFromName(c as CardName))
     //Let's hardcode iterations to 10,000 for now
-    let result = Sim.run(deck, e.data.runs)
+    let result = Sim.run(deck, e.data.runs, e.data.logic)
     self.postMessage(result);
 
     console.timeEnd('worker')

@@ -4,6 +4,7 @@ import './App.css';
 import { useAsyncCallback } from 'react-async-hook';
 import SimWorker from './workers/sim';
 import { CardName } from './models/enums';
+import { CardPriority } from './models/Sim';
 
 function App() {
 
@@ -26,6 +27,15 @@ America Chavez
   const deck = deckInput.split('\n').map(l => l.trim() as CardName).filter(cn => cn !== null)
   //console.log(deckInput)
   const asyncSim = useAsyncCallback(SimWorker)
+  const logic:CardPriority = {
+    turn1: ["Bast"],
+    turn2: ["Zabu", "Psylocke"],
+    turn3: ["Mister Negative", "Jubilee"],
+    turn4: [],
+    turn5: [],
+    turn6: [],
+    turn7: [],
+  }
 
   //console.log(asyncSim.result)
 
@@ -70,7 +80,7 @@ America Chavez
         </tbody>
         </table>
         <hr/>
-        <button disabled={asyncSim.loading || deck.length !== 12} onClick={e => asyncSim.execute({cards:deck, runs:runsCount})}>Do magic</button>
+        <button disabled={asyncSim.loading || deck.length !== 12} onClick={e => asyncSim.execute({cards:deck, runs:runsCount, logic:logic})}>Do magic</button>
         Result:
         {asyncSim.result && <pre>{asyncSim.result.successes / asyncSim.result.iterations}</pre>}
       </header>

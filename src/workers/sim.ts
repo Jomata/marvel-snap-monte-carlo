@@ -1,11 +1,12 @@
 import { CardName } from "../models/enums"
-import { SimResult } from "../models/Sim"
+import { CardPriority, SimResult } from "../models/Sim"
 
 const worker = new Worker(new URL('sim.worker', import.meta.url))
 
 export interface SimWorkerPayload {
     cards: CardName[]
     runs: number
+    logic: CardPriority
 }
 
 export default function SimWorker(payload: SimWorkerPayload) {

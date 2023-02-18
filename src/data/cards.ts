@@ -1,3 +1,4 @@
+//name, cost, power
 export const cardsData:[string,number,number][] = [
   ["Bast",1,1],
   ["Mister Negative",4,-1],

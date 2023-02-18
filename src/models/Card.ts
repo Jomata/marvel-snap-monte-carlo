@@ -69,7 +69,7 @@ export default class Card {
     }
 
     copy(props?:Partial<CardProps>, effects?:Partial<CardEffects>) : Card {
-        return new Card(this.name, props, effects)
+        return new Card(this.name, { ...this, ...props}, effects)
     }
 
     getEffectiveCost(game:Game) : number {
