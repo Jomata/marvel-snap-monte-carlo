@@ -3,7 +3,12 @@ import { SimResult } from "../models/Sim"
 
 const worker = new Worker(new URL('sim.worker', import.meta.url))
 
-export default function SimWorker(payload: CardName[]) {
+export interface SimWorkerPayload {
+    cards: CardName[]
+    runs: number
+}
+
+export default function SimWorker(payload: SimWorkerPayload) {
     worker.postMessage(payload)
     return new Promise<SimResult>((resolve, reject) => {
         worker.onmessage = (e: MessageEvent<SimResult>) => {

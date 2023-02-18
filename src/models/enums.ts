@@ -7,7 +7,7 @@ const CARD_NAMES = [
     "Agent Coulson",
     "America Chavez",
     "Angel",
-
+    "Bast",
     "Jubilee",
     "Mister Negative",
     "Psylocke",

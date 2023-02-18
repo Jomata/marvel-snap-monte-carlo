@@ -1,10 +1,21 @@
 import Card from "./Card";
+import { CardName } from "./enums";
 import Game from "./Game";
 
 export interface SimResult {
     iterations : number
     successes : number
     failures : number
+}
+
+export interface CardPriority {
+    turn1 : CardName[],
+    turn2 : CardName[],
+    turn3 : CardName[],
+    turn4 : CardName[],
+    turn5 : CardName[],
+    turn6 : CardName[],
+    turn7 : CardName[],
 }
 
 export default abstract class Sim {
@@ -25,11 +36,12 @@ export default abstract class Sim {
                 .startGame()
                 //Turn 1
                 .startTurn()
+                .playCardIfPossible("Bast")
                 .endTurn()
                 //Turn 2
                 .startTurn()
-                .playCardIfPossible("Psylocke")
                 .playCardIfPossible("Zabu")
+                .playCardIfPossible("Psylocke")
                 .endTurn()
                 //Turn 3
                 .startTurn()

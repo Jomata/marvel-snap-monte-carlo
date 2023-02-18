@@ -2,6 +2,7 @@ import randomElement from "../helpers/randomElement";
 import { DEBUG } from "./constants";
 import { CardName } from "./enums";
 import Game from "./Game";
+import { cardsData } from "../data/cards";
 
 export type CardProps = {
     energy: number,
@@ -31,30 +32,44 @@ export default class Card {
 
     //For now I'm putting the factory method in here, need to move it to a better place
     static createFromName(name:CardName) : Card {
+        const cardData = cardsData.find(r => r[0] === name)
+        if(!cardData) return new Card(name)
+        
+        const baseCard = new Card(name, {energy:cardData[1], power:cardData[2]})
+
         switch (name) {
+            case "Bast":
+                return baseCard.copy({}, {onReveal:(g => {
+                    const newHand = g.hand.map(c => c.copy({power:3}))
+                    return g.copy({hand:newHand})
+                })} )
             case "Psylocke":
-                return new Card(name, {energy:2, power: 1}, {onReveal:(g => {
+                return baseCard.copy({}, {onReveal:(g => {
                     return g.addHook({name:"Psylocke onReveal", oneTimeOnly:true, onTurnStart:(g => g.copy({tempEnergy: g.tempEnergy+1}))})
                 })} )
             case "Zabu":
-                return new Card(name, {energy:2, power: 2})
+                return baseCard.copy({}); //TODO: Add Zabu ONGOING effect
             case "Jubilee":
-                return new Card(name, {energy: 4, power: 1}, {onReveal:(g => {
+                return baseCard.copy({}, {onReveal:(g => {
                     const pull = randomElement(g.library)
+                    console.log(` > %c${name} %cpulls %c${pull.name}`, DEBUG.CSS_CARD_NAME, '', DEBUG.CSS_CARD_NAME)
                     return g.copy({
                         library: g.library.filter(c => c !== pull),
                         field: g.field.concat(pull),
                     })
                 })})
             case "Mister Negative":
-                return new Card(name, {energy:4, power:-1})
+                return baseCard.copy({}, {onReveal:(g => {
+                    const newLibrary = g.library.map(c => c.copy({power:c.energy, energy: Math.max(0, c.power)}))
+                    return g.copy({library:newLibrary})
+                })} )
             default:
-                return new Card(name)
+                return baseCard;
         }
     }
 
-    copy(props?:Partial<CardProps>) : Card {
-        return new Card(this.name, props)
+    copy(props?:Partial<CardProps>, effects?:Partial<CardEffects>) : Card {
+        return new Card(this.name, props, effects)
     }
 
     getEffectiveCost(game:Game) : number {
