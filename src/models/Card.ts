@@ -1,8 +1,7 @@
 import randomElement from "../helpers/randomElement";
 import { DEBUG } from "./constants";
-import { CardName } from "./enums";
+import { CardName, cardsData } from "../data/cards";
 import Game from "./Game";
-import { cardsData } from "../data/cards";
 
 export type CardProps = {
     energy: number,
@@ -73,9 +72,13 @@ export default class Card {
     }
 
     getEffectiveCost(game:Game) : number {
-        //Harcoding Zabu here
-        if(game.field.some(c => c.name === "Zabu") && this.energy === 4) return 3
-        else return this.energy
+        //Harcoding Zabu and Sera here for now
+        let cost = this.energy;
+        if(game.field.some(c => c.name === "Sera")) cost = Math.max(1, cost - 1) //-1 cost, minimum 1
+        //TODO: Store original cost somewhere for Zabu checking
+        if(game.field.some(c => c.name === "Zabu") && this.energy === 4) cost = cost -1 //-1 cost, no minimum
+        
+        return cost
     }
 
     isPlayable(game:Game) : boolean {

@@ -3,7 +3,7 @@
 import check from "../helpers/check";
 import { shuffle } from "../helpers/shuffle";
 import Card from "./Card";
-import { CardName } from "./enums";
+import { CardName } from "../data/cards";
 import { DEBUG } from './constants'
 
 export type GameProps = {

@@ -1,5 +1,5 @@
 import Card from "./Card";
-import { CardName } from "./enums";
+import { CardName } from "../data/cards";
 import Game from "./Game";
 
 export interface SimResult {
@@ -19,7 +19,7 @@ export interface CardPriority {
 }
 
 export default abstract class Sim {
-    static run(deck:Card[], iterations:number, logic:CardPriority) : SimResult {
+    static run(deck:Card[], iterations:number, logic:CardPriority, expected:CardName[]) : SimResult {
 
         console.log("Run")
 
@@ -41,8 +41,11 @@ export default abstract class Sim {
                 .playTurn(logic.turn5)
                 .playTurn(logic.turn6)
                 //.playTurn(logic.turn7) //TODO: Think what to do about LIMBO
-            
-            if(endState.field.some(c => c.name === "Mister Negative")) 
+
+            //Check that all of the expected cards are in the field
+            const success = expected.every(e => endState.field.some(c => c.name === e))
+            // if(endState.field.some(c => c.name === "Mister Negative")) 
+            if(success)
                 result.successes++;
             else
                 result.failures++;
