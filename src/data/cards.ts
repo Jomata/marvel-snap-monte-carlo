@@ -23,7 +23,7 @@ export const cardsData:[CardName,number,number][] = [
 ]
 
 //TODO: Figure out how to get this list from cardsData
-const CARD_NAMES = [
+export const CARD_NAMES = [
 "Bast",
 "Mister Negative",
 "Psylocke",
