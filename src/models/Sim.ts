@@ -24,7 +24,7 @@ export interface CardPriority {
 }
 
 export default abstract class Sim {
-    static run(deck:Card[], iterations:number, logic:CardPriority, expected:CardName[]) : SimResult {
+    static run(deck:Card[], iterations:number, logic:CardPriority, expected:CardName[], onProgress?:(progress:number)=>void) : SimResult {
 
         console.log("Run")
 
@@ -41,6 +41,8 @@ export default abstract class Sim {
 
         for(let i =0; i<iterations; i++) {
             result.iterations++
+            if(iterations % 10 === 0 && onProgress)
+                onProgress(result.iterations / iterations)
             const game = new Game(deck)
             const endState = game
                 .startGame()

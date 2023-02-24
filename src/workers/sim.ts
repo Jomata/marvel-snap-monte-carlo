@@ -10,11 +10,22 @@ export interface SimWorkerPayload {
     expected: CardName[]
 }
 
-export default function SimWorker(payload: SimWorkerPayload) {
+type SimWorkerMessage = {
+    type: 'progress' | 'result'
+    result?: SimResult
+    progress?: number
+}
+
+export default function SimWorker(payload: SimWorkerPayload, onProgress?:(progress:number)=>void) {
     worker.postMessage(payload)
     return new Promise<SimResult>((resolve, reject) => {
-        worker.onmessage = (e: MessageEvent<SimResult>) => {
-            resolve(e.data)
+        worker.onmessage = (e: MessageEvent<SimWorkerMessage>) => {
+            if(e.data.type === 'result' && e.data.result !== undefined) {
+                resolve(e.data.result)
+            }
+            if(e.data.type === 'progress' && e.data.progress !== undefined) {
+                onProgress?.(e.data.progress)
+            }
         }
         worker.onerror = (e: ErrorEvent) => {
             reject(e.error)
