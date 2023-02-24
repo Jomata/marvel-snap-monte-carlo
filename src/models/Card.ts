@@ -42,6 +42,10 @@ export default class Card {
                     const newHand = g.hand.map(c => c.copy({power:3}))
                     return g.copy({hand:newHand})
                 })} )
+            case "Electro":
+                return baseCard.copy({}, {onReveal:(g => {
+                    return g.addHook({name:"Electro onReveal", oneTimeOnly:true, onTurnStart:(g => g.copy({baseEnergy: g.baseEnergy+1}))})
+                })} )
             case "Psylocke":
                 return baseCard.copy({}, {onReveal:(g => {
                     return g.addHook({name:"Psylocke onReveal", oneTimeOnly:true, onTurnStart:(g => g.copy({tempEnergy: g.tempEnergy+1}))})
@@ -77,6 +81,12 @@ export default class Card {
         if(game.field.some(c => c.name === "Sera")) cost = Math.max(1, cost - 1) //-1 cost, minimum 1
         //TODO: Store original cost somewhere for Zabu checking
         if(game.field.some(c => c.name === "Zabu") && this.energy === 4) cost = cost -1 //-1 cost, no minimum
+        //TODO: Find a more elegant way to handle Wave
+        if(game.field.some(c => c.name === "Wave")) {
+            const thisTurn = game.turn
+            const wavePlayedLastTurn = game.history.some(g => g.turn === thisTurn - 1 && g.field.some(c => c.name === "Wave" && c.revealed === false))
+            if(wavePlayedLastTurn) return 4
+        }
         
         return cost
     }

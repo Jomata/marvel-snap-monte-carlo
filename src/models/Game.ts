@@ -43,12 +43,14 @@ export default class Game {
     public readonly library:Card[] = [];
     public readonly field:Card[] = [];
 
+    public readonly history:Game[] = []
     readonly hooks:GameHook[] = []
 
-    constructor(deck:Card[], props?:Partial<GameProps>, hooks:GameHook[] = []) {
+    constructor(deck:Card[], props?:Partial<GameProps>, hooks:GameHook[] = [], history:Game[] = []) {
         this.deck = deck
         Object.assign(this, props)
         this.hooks = hooks;
+        this.history = history;
         this.validateState()
     }
 
@@ -60,7 +62,7 @@ export default class Game {
 
     //Props overwrites whatever is set, hooks overwrites the whole array if set
     copy(props?:Partial<GameProps>, hooks?:GameHook[]) : Game {
-        return new Game(this.deck, {...this, ...props}, hooks ?? this.hooks)
+        return new Game(this.deck, {...this, ...props}, hooks ?? this.hooks, [...this.history, this])
     }
 
     addHook(newHook:GameHook) : Game {

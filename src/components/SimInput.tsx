@@ -2,27 +2,32 @@ import { Container, Grid, TextInput, MultiSelect, Group, Button, NumberInput, Di
 import { useState } from "react";
 import { useAsyncCallback } from "react-async-hook";
 import { CardName } from "../data/cards";
+import { Deck } from "../models/Deck";
 import { CardPriority } from "../models/Sim";
 import SimWorker  from "../workers/sim";
 import DeckInput from "./DeckInput";
 import LogicInput from "./LogicInput";
 
 export type SimInputProps = {
-    selectedDeck:string,
+    deck:Deck,
     onNameChange:(deckName:string)=>void,
     onDeckChange:(cards:CardName[])=>void,
 }
 
 export default function SimInput({
-    selectedDeck,
+    deck,
     onNameChange,
     onDeckChange,
 }:SimInputProps) {
     const asyncSim = useAsyncCallback(SimWorker)
     const [simProgress, setSimProgress] = useState(0)
-    const [deckName, setDeckName] = useState(selectedDeck)
     const [runsCount, setRunsCount] = useState(1000)
     const [expected, setExpected] = useState<CardName[]>(["Bast", "Mister Negative"])
+    
+    //We need an ON EFFECT somewhere around here
+    //To load the logic/end conditions 
+    //when we change deck or select one for the first time
+    
     const [logic, setLogic] = useState<CardPriority>({
         turn1: ["Bast"],
         turn2: ["Zabu", "Psylocke"],
@@ -32,47 +37,27 @@ export default function SimInput({
         turn6: [],
         turn7: [],
     })
-    
-    const [deck, setDeck] = useState<CardName[]>(() => {
-        //Load deck from memory here
-        const deckValue:CardName[] = [
-            "Bast",
-            "Psylocke",
-            "Zabu",
-            "Ironheart",
-            "Mystique",
-            "Wolfsbane",
-            "Brood",
-            "Silver Surfer",
-            "Mister Negative",
-            "Jubilee",
-            "Wong",
-            "Iron Man",
-        ]
-        onDeckChange(deckValue);
-        return deckValue
-    })
 
     return (<Container>
         <Grid>
           <Grid.Col span={12}>
-              <TextInput label="Deck name" value={deckName} onChange={e => {setDeckName(e.currentTarget.value); onNameChange(e.currentTarget.value)}} />
+              <TextInput label="Deck name" value={deck.name} onChange={e => {onNameChange(e.currentTarget.value)}} />
           </Grid.Col>
-          <Grid.Col span={3}><DeckInput deck={deck} onDeckChange={v => {setDeck(v); onDeckChange(v);}} /></Grid.Col>
-          <Grid.Col span={9}><LogicInput deck={deck} onChange={setLogic} logic={logic} /></Grid.Col>
+          <Grid.Col span={3}><DeckInput deck={deck.cards} onDeckChange={onDeckChange} /></Grid.Col>
+          <Grid.Col span={9}><LogicInput deck={deck.cards} onChange={setLogic} logic={logic} /></Grid.Col>
 
           <Grid.Col span={12}>
             We want the following cards on board:
-            <MultiSelect data={deck} searchable value={expected} onChange={v => setExpected(v.map(v => v as CardName))} />
+            <MultiSelect data={deck.cards} searchable value={expected} onChange={v => setExpected(v.map(v => v as CardName))} />
           </Grid.Col>
 
           <Grid.Col span={12}>
             <Group>
               <Button 
-                  disabled={deck.length !== 12}
+                  disabled={deck.cards.length !== 12}
                 //   variant="outline"
                 //   onClick={e => asyncSim.execute({cards:deck, runs:runsCount, logic:logic, expected})}
-                  onClick={e => asyncSim.execute({cards:deck, runs:runsCount, logic:logic, expected}, setSimProgress)}
+                  onClick={e => asyncSim.execute({cards:deck.cards, runs:runsCount, logic:logic, expected}, setSimProgress)}
                   loading={asyncSim.loading}
                   loaderPosition="center"
                   style={asyncSim.loading ? {
