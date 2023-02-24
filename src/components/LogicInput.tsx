@@ -1,4 +1,4 @@
-import { Grid, MultiSelect } from "@mantine/core";
+import { Center, Grid, MultiSelect } from "@mantine/core";
 import React from "react";
 import { useState } from "react";
 import { CardName } from "../data/cards";
@@ -32,8 +32,12 @@ export default function LogicInput({
                 const turn = k as TurnNumber
                 const cards = v as CardName[]
                 return <React.Fragment key={k}>
-                    <Grid.Col span={2}>{k}</Grid.Col>
-                    <Grid.Col span={10}><MultiSelect
+                    <Grid.Col span={3}>
+                        <Center>
+                        On {k.replace('turn','turn ')}, play:
+                        </Center>
+                    </Grid.Col>
+                    <Grid.Col span={9}><MultiSelect
                         data={deck}
                         searchable
                         placeholder="Choose which cards to play"
