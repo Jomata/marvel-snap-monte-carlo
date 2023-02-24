@@ -20,6 +20,7 @@ export const cardsData:[CardName,number,number][] = [
   ["Wong",4,2],
   ["Iron Man",5,0],
   ["Sera",5,4],
+  ["Magik",5,3]
 ]
 
 //TODO: Figure out how to get this list from cardsData
@@ -44,6 +45,7 @@ export const CARD_NAMES = [
 "Wong",
 "Iron Man",
 "Sera",
+"Magik",
 ] as const
 
 export type CardName = typeof CARD_NAMES[number]

@@ -44,7 +44,7 @@ export default abstract class Sim {
             if(iterations % 10 === 0 && onProgress)
                 onProgress(result.iterations / iterations)
             const game = new Game(deck)
-            const endState = game
+            const turn6 = game
                 .startGame()
                 .playTurn(logic.turn1)
                 .playTurn(logic.turn2)
@@ -52,7 +52,9 @@ export default abstract class Sim {
                 .playTurn(logic.turn4)
                 .playTurn(logic.turn5)
                 .playTurn(logic.turn6)
-                //.playTurn(logic.turn7) //TODO: Think what to do about LIMBO/MAGICK
+
+            //TODO: Think of a better way to handle Magik
+            const endState = turn6.field.some(c => c.name === "Magik") ? turn6.playTurn(logic.turn7) : turn6;
 
             //Check that all of the expected cards are in the field
             const success = expected.every(e => endState.field.some(c => c.name === e))
