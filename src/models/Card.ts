@@ -34,7 +34,7 @@ export default class Card {
         const cardData = cardsData.find(r => r[0] === name)
         if(!cardData) return new Card(name)
         
-        const baseCard = new Card(name, {energy:cardData[1], power:cardData[2]})
+        const baseCard = new Card(name, {energy:cardData[2], power:cardData[3]})
 
         switch (name) {
             case "Bast":

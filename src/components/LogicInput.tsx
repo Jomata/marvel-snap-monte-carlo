@@ -1,6 +1,5 @@
 import { Center, Grid, MultiSelect } from "@mantine/core";
 import React from "react";
-import { useState } from "react";
 import { CardName } from "../data/cards";
 import { CardPriority } from "../models/Sim";
 
