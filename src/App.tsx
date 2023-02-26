@@ -5,16 +5,13 @@ import { AppShell, Center, Header, MantineProvider, Navbar, NavLink, ScrollArea,
 import { NotificationsProvider } from '@mantine/notifications';
 import SimInput from './components/SimInput';
 import { Deck } from './models/Deck';
+import { useLocalStorage, randomId } from '@mantine/hooks';
 
 function App() {
-
-  // const [deckCards, setDeckCards] = useState<CardName[]>([])
-  // const [decks, setDecks] = useState<string[]>([
-  //   "Mister Negative",
-  //   "Galactus",
-  // ])
-  const [decks, setDecks] = useState<Deck[]>([
+  //mantine hooks has a randomId() method
+  const [decks, setDecks] = useLocalStorage<Deck[]>({key: 'casino_decks', defaultValue: [
     {
+      id: 'sample_negative',
       name:"Mister Negative",
       cards:[
         "Bast",
@@ -31,6 +28,7 @@ function App() {
         "Iron Man",
       ]
     },{
+      id: 'sample_galactus',
       name:"Galactus",
       cards:[
         "The Hood",
@@ -47,7 +45,7 @@ function App() {
         "Death",
       ]
     }
-  ])
+  ]})
   const [selectedDeck, setSelectedDeck] = useState(0)
 
   const setDeckCards = (cards:CardName[]) => {
@@ -68,6 +66,7 @@ function App() {
 
   const addNewDeck = () => {
     const newDeck:Deck = {
+      id: "deck_" + randomId(),
       name: "New deck",
       cards: [],
     }
@@ -83,16 +82,16 @@ function App() {
           padding="md"
           navbar={
             <Navbar width={{ base: 200 }}>
-              <Navbar.Section>
+              {/* <Navbar.Section>
                 <Space h="md" />
                 <Center><Title>Decks</Title></Center>
                 <Space h="md" />
-              </Navbar.Section>
+              </Navbar.Section> */}
               <Navbar.Section grow component={ScrollArea}>
                 <NavLink label={"Add new deck"} onClick={addNewDeck} />
                 {decks.map((deck, i) => <>
                   <NavLink 
-                    key={deck.name} 
+                    key={deck.id} 
                     label={deck.name} 
                     description={deck.cards.join(', ')} 
                     active={selectedDeck === i}
@@ -110,7 +109,9 @@ function App() {
             main: { backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] },
           })}
         >
-          <SimInput deck={decks[selectedDeck]} onDeckChange={setDeckCards} onNameChange={setDeckName} />
+          {decks.map((deck, i) => <>
+            {selectedDeck === i && <SimInput key={i} deck={decks[selectedDeck]} onDeckChange={setDeckCards} onNameChange={setDeckName} />}
+          </>)}
         </AppShell>
       </NotificationsProvider>
     </MantineProvider>

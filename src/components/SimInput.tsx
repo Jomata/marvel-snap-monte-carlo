@@ -1,4 +1,5 @@
 import { Container, Grid, TextInput, MultiSelect, Group, Button, NumberInput, Divider, Center } from "@mantine/core";
+import { useLocalStorage } from '@mantine/hooks';
 import { useState } from "react";
 import { useAsyncCallback } from "react-async-hook";
 import { CardName } from "../data/cards";
@@ -14,6 +15,53 @@ export type SimInputProps = {
     onDeckChange:(cards:CardName[])=>void,
 }
 
+function getDefaultLogic(deckId:string):CardPriority {
+  switch (deckId) {
+    case `sample_negative`:
+      return {
+          turn1: ["Bast"],
+          turn2: ["Zabu", "Psylocke"],
+          turn3: ["Mister Negative", "Jubilee"],
+          turn4: [],
+          turn5: [],
+          turn6: [],
+          turn7: [],
+      }
+      case `sample_galactus`:
+        return {
+          turn1: [],
+          turn2: [],
+          turn3: ["Wave", "Electro"],
+          turn4: ["Galactus", "Electro", "Psylocke"],
+          turn5: ["Galactus"],
+          turn6: [],
+          turn7: [],
+      }
+  
+    default:
+      return {
+        turn1: [],
+        turn2: [],
+        turn3: [],
+        turn4: [],
+        turn5: [],
+        turn6: [],
+        turn7: [],
+    }
+  }
+}
+
+function getDefaultExpected(deckId:string):CardName[] {
+  switch (deckId) {
+    case `sample_negative`:
+      return ["Mister Negative"]
+      case `sample_galactus`:
+        return ["Galactus"]  
+    default:
+      return []
+  }
+}
+
 export default function SimInput({
     deck,
     onNameChange,
@@ -22,21 +70,8 @@ export default function SimInput({
     const asyncSim = useAsyncCallback(SimWorker)
     const [simProgress, setSimProgress] = useState(0)
     const [runsCount, setRunsCount] = useState(1000)
-    const [expected, setExpected] = useState<CardName[]>(["Bast", "Mister Negative"])
-    
-    //We need an ON EFFECT somewhere around here
-    //To load the logic/end conditions 
-    //when we change deck or select one for the first time
-    
-    const [logic, setLogic] = useState<CardPriority>({
-        turn1: ["Bast"],
-        turn2: ["Zabu", "Psylocke"],
-        turn3: ["Mister Negative", "Jubilee"],
-        turn4: [],
-        turn5: [],
-        turn6: [],
-        turn7: [],
-    })
+    const [expected, setExpected] = useLocalStorage<CardName[]>({key:`casino_expected_${deck.id}`, defaultValue: getDefaultExpected(deck.id)})
+    const [logic, setLogic] = useLocalStorage<CardPriority>({key:`casino_logic_${deck.id}`, defaultValue: getDefaultLogic(deck.id)})
 
     return (<Container>
         <Grid>
@@ -55,8 +90,6 @@ export default function SimInput({
             <Group>
               <Button 
                   disabled={deck.cards.length !== 12}
-                //   variant="outline"
-                //   onClick={e => asyncSim.execute({cards:deck, runs:runsCount, logic:logic, expected})}
                   onClick={e => asyncSim.execute({cards:deck.cards, runs:runsCount, logic:logic, expected}, setSimProgress)}
                   loading={asyncSim.loading}
                   loaderPosition="center"
