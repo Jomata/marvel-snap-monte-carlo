@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/marvel-snap-monte-carlo/static/css/main.e6c13ad2.css",
+    "main.js": "/marvel-snap-monte-carlo/static/js/main.ea861b7f.js",
+    "static/js/341.1e21531a.chunk.js": "/marvel-snap-monte-carlo/static/js/341.1e21531a.chunk.js",
+    "static/js/787.e1a212c3.chunk.js": "/marvel-snap-monte-carlo/static/js/787.e1a212c3.chunk.js",
+    "index.html": "/marvel-snap-monte-carlo/index.html",
+    "main.e6c13ad2.css.map": "/marvel-snap-monte-carlo/static/css/main.e6c13ad2.css.map",
+    "main.ea861b7f.js.map": "/marvel-snap-monte-carlo/static/js/main.ea861b7f.js.map",
+    "341.1e21531a.chunk.js.map": "/marvel-snap-monte-carlo/static/js/341.1e21531a.chunk.js.map",
+    "787.e1a212c3.chunk.js.map": "/marvel-snap-monte-carlo/static/js/787.e1a212c3.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.ea861b7f.js"
+  ]
+}
